@@ -10,6 +10,7 @@ import { swatchFor } from "./artwork";
 import { SURFACE_LABELS, describeModel } from "./data";
 import { CheckIcon, CloseIcon, SearchIcon } from "./icons";
 import { ModelIcon, modelIconSrc } from "./model-icon";
+import { filterModels } from "./model-search";
 
 export function ModelPicker({
   selectedId,
@@ -30,14 +31,11 @@ export function ModelPicker({
     inputRef.current?.focus();
   }, []);
 
-  const query = search.trim().toLowerCase();
+  const query = search.trim();
   const catalog = MODELS.filter((model) => model.surface === surface);
   /* The description is searchable too: "references", "4K" and "audio" are how
      a visitor asks for a model whose name they do not remember. */
-  const models = catalog.filter(
-    (model) =>
-      !query || `${model.label} ${model.id} ${describeModel(model)}`.toLowerCase().includes(query),
-  );
+  const models = filterModels(catalog, describeModel, query);
 
   return (
     <div
